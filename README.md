@@ -18,6 +18,7 @@ func _ready() -> void:
 
 ### async example
 ```gdscript
+func _ready() -> void:
     var unirest_request: UnirestRequest = \
         Unirest.get("https://jsonplaceholder.typicode.com/posts/{id}") \
         .header("Accept", "application/json") \
