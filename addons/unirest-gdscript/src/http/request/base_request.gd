@@ -1,7 +1,7 @@
 extends HTTPRequest
 class_name BaseRequest
 
-signal response(http_response)
+signal completed(http_response)
 
 
 enum ResponseType {
@@ -73,7 +73,7 @@ func query_string_from_dict(query: Dictionary) -> String:
 func _on_http_request_completed(result: int, response_code: int, headers: PoolStringArray, body: PoolByteArray) -> void:
     match response_type:
         ResponseType.STRING:
-            emit_signal("response", StringResponse.new(body, headers, response_code))
+            emit_signal("completed", StringResponse.new(body, headers, response_code))
         ResponseType.DICTIONARY:
-            emit_signal("response", JsonResponse.new(body, headers, response_code))
+            emit_signal("completed", JsonResponse.new(body, headers, response_code))
     

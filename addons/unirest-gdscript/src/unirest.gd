@@ -11,8 +11,8 @@ func options(url: String) -> UnirestRequest:
 func head(url: String) -> UnirestRequest:
     return _request(url, HTTPClient.METHOD_HEAD)
 
-func Get(url: String) -> UnirestRequest:
-    return _request(url, HTTPClient.METHOD_POST)
+func get(url: String) -> UnirestRequest:
+    return _request(url, HTTPClient.METHOD_GET)
 
 func post(url: String) -> UnirestRequest:
     return _request(url, HTTPClient.METHOD_POST)
