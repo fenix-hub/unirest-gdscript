@@ -12,12 +12,12 @@ _global_script_classes=[ {
 "base": "HTTPRequest",
 "class": "BaseRequest",
 "language": "GDScript",
-"path": "res://addons/unirest-gdscript/src/http/BaseRequest.gd"
+"path": "res://addons/unirest-gdscript/src/http/request/base_request.gd"
 }, {
 "base": "Reference",
 "class": "BaseResponse",
 "language": "GDScript",
-"path": "res://addons/unirest-gdscript/src/http/BaseResponse.gd"
+"path": "res://addons/unirest-gdscript/src/http/response/base_response.gd"
 }, {
 "base": "Reference",
 "class": "JsonNode",
@@ -27,17 +27,17 @@ _global_script_classes=[ {
 "base": "BaseResponse",
 "class": "JsonResponse",
 "language": "GDScript",
-"path": "res://addons/unirest-gdscript/src/http/JsonResponse.gd"
+"path": "res://addons/unirest-gdscript/src/http/response/json_response.gd"
 }, {
 "base": "BaseResponse",
 "class": "StringResponse",
 "language": "GDScript",
-"path": "res://addons/unirest-gdscript/src/http/StringResponse.gd"
+"path": "res://addons/unirest-gdscript/src/http/response/string_response.gd"
 }, {
 "base": "BaseRequest",
 "class": "UnirestRequest",
 "language": "GDScript",
-"path": "res://addons/unirest-gdscript/src/http/UnirestRequest.gd"
+"path": "res://addons/unirest-gdscript/src/http/request/unirest_request.gd"
 } ]
 _global_script_class_icons={
 "BaseRequest": "",
@@ -56,7 +56,7 @@ config/icon="res://icon.png"
 
 [autoload]
 
-Unirest="*res://addons/unirest-gdscript/src/Unirest.gd"
+Unirest="*res://addons/unirest-gdscript/src/unirest.gd"
 
 [editor_plugins]
 
