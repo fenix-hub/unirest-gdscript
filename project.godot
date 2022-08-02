@@ -1,0 +1,71 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=4
+
+_global_script_classes=[ {
+"base": "HTTPRequest",
+"class": "BaseRequest",
+"language": "GDScript",
+"path": "res://addons/unirest-gdscript/src/http/BaseRequest.gd"
+}, {
+"base": "Reference",
+"class": "BaseResponse",
+"language": "GDScript",
+"path": "res://addons/unirest-gdscript/src/http/BaseResponse.gd"
+}, {
+"base": "Reference",
+"class": "JsonNode",
+"language": "GDScript",
+"path": "res://addons/unirest-gdscript/src/utils/json_node.gd"
+}, {
+"base": "BaseResponse",
+"class": "JsonResponse",
+"language": "GDScript",
+"path": "res://addons/unirest-gdscript/src/http/JsonResponse.gd"
+}, {
+"base": "BaseResponse",
+"class": "StringResponse",
+"language": "GDScript",
+"path": "res://addons/unirest-gdscript/src/http/StringResponse.gd"
+}, {
+"base": "BaseRequest",
+"class": "UnirestRequest",
+"language": "GDScript",
+"path": "res://addons/unirest-gdscript/src/http/UnirestRequest.gd"
+} ]
+_global_script_class_icons={
+"BaseRequest": "",
+"BaseResponse": "",
+"JsonNode": "",
+"JsonResponse": "",
+"StringResponse": "",
+"UnirestRequest": ""
+}
+
+[application]
+
+config/name="unirest-gdscript"
+run/main_scene="res://scn/Control.tscn"
+config/icon="res://icon.png"
+
+[autoload]
+
+Unirest="*res://addons/unirest-gdscript/src/Unirest.gd"
+
+[editor_plugins]
+
+enabled=PoolStringArray( "res://addons/unirest-gdscript/plugin.cfg" )
+
+[physics]
+
+common/enable_pause_aware_picking=true
+
+[rendering]
+
+environment/default_environment="res://default_env.tres"
