@@ -30,12 +30,12 @@ func make_request() -> int:
     var r_url: String = url.format(route_params)
     if !uri.empty():
         r_url += "/" + uri
-    var query_string: String = query_string_from_dict(query_params)
+    var query_string: String = Operations.query_string_from_dict(query_params)
     if !query_string.empty():
         r_url += "?" + query_string
     return request_raw(
         r_url, 
-        headers_from_dictionary(headers), 
+        Operations.headers_from_dictionary(headers), 
         true, 
         method, 
         body
@@ -59,21 +59,18 @@ func as_json() -> BaseRequest:
 
 func as_string_async() -> void:
     response_type = ResponseType.STRING
-    pass
+    make_request()
 
-func headers_from_dictionary(headers: Dictionary) -> PoolStringArray:
-    var array: Array = []
-    for key in headers.keys():
-        array.append("%s=%s" % [key, headers.get(key)])
-    return PoolStringArray(array)
-
-func query_string_from_dict(query: Dictionary) -> String:
-    return headers_from_dictionary(query).join("&")
+func as_string() -> BaseRequest:
+    as_string_async()
+    return self
     
 func _on_http_request_completed(result: int, response_code: int, headers: PoolStringArray, body: PoolByteArray) -> void:
     match response_type:
+        ResponseType.BINARY:
+            emit_signal("completed", BaseResponse.new(body, headers, response_code))
         ResponseType.STRING:
             emit_signal("completed", StringResponse.new(body, headers, response_code))
         ResponseType.DICTIONARY:
             emit_signal("completed", JsonResponse.new(body, headers, response_code))
-    
+    queue_free()

@@ -1,7 +1,7 @@
 extends BaseResponse
 class_name JsonResponse
 
-var _body: JsonNode
+var _body: JsonNode = null
 
 func _parse_body(raw_body: PoolByteArray) -> void:
     var parse: JSONParseResult = JSON.parse(raw_body.get_string_from_utf8())

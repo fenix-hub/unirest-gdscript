@@ -1,7 +1,7 @@
 extends Reference
 class_name JsonNode
 
-var result
+var result = null
 
 func _init(result) -> void:
     self.result = result
@@ -12,7 +12,7 @@ func is_array() -> bool:
 func to_string() -> String:
     return JSON.print(result)
 
-# Untyped return!
+# Untyped return
 func get_result():
     return result
 
