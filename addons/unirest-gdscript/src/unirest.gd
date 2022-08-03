@@ -1,27 +1,27 @@
 extends Node
 
-func _request(url: String, method: int) -> UnirestRequest:
-    var ur: UnirestRequest = UnirestRequest.new(url, method)
-    add_child(ur)
-    return ur
+func _request(url: String, method: int) -> HttpRequestWithBody:
+    var http_request: HttpRequestWithBody = HttpRequestWithBody.new(url, method)
+    add_child(http_request)
+    return http_request
 
-func options(url: String) -> UnirestRequest:
+func options(url: String) -> HttpRequestWithBody:
     return _request(url, HTTPClient.METHOD_OPTIONS)
 
-func head(url: String) -> UnirestRequest:
+func head(url: String) -> HttpRequestWithBody:
     return _request(url, HTTPClient.METHOD_HEAD)
 
-func get(url: String) -> UnirestRequest:
+func get(url: String) -> HttpRequestWithBody:
     return _request(url, HTTPClient.METHOD_GET)
 
-func post(url: String) -> UnirestRequest:
+func post(url: String) -> HttpRequestWithBody:
     return _request(url, HTTPClient.METHOD_POST)
 
-func put(url: String) -> UnirestRequest:
+func put(url: String) -> HttpRequestWithBody:
     return _request(url, HTTPClient.METHOD_PUT)
 
-func patch(url: String) -> UnirestRequest:
+func patch(url: String) -> HttpRequestWithBody:
     return _request(url, HTTPClient.METHOD_PATCH)
 
-func delete(url: String) -> UnirestRequest:
+func delete(url: String) -> HttpRequestWithBody:
     return _request(url, HTTPClient.METHOD_DELETE)
