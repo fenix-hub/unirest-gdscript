@@ -4,9 +4,10 @@ class_name BaseRequest
 signal completed(http_response)
 
 enum ResponseType {
+    EMPTY,
     BINARY,
     STRING,
-    DICTIONARY
+    DICTIONARY,
 }
 
 var response_type: int
@@ -21,30 +22,39 @@ var route_params: Dictionary = {}
 var body: PoolByteArray = []
 var verify_ssl: bool = false
 
-func _init(url: String, method: int) -> void:
+func _init(url: String, method: int, uri: String = "", headers: Dictionary = {},
+    query_params: Dictionary = {}, route_params: Dictionary = {}, body: PoolByteArray = []) -> void:
     connect("request_completed", self, "_on_http_request_completed")
     self.url = url
     self.method = method
+    self.uri = uri
+    self.headers = headers
+    self.query_params = query_params
+    self.route_params = route_params
+    self.body = body
 
 func make_request() -> int:
     # URL
-    var r_url: String = url.format(route_params)
+    var _url: String = url.format(route_params)
     if !uri.empty():
-        r_url += "/" + uri
+        _url += "/" + uri
     var query_string: String = Operations.query_string_from_dict(query_params)
     if !query_string.empty():
-        r_url += "?" + query_string
+        _url += "?" + query_string
     
     # BODY
     self.body = _parse_body()
 
     # HEADERS
-    headers["Content-Type"] = self.content_type
-    headers["Content-Length"] = self.body.size()
-
+    self.headers["Content-Type"] = self.content_type
+    self.headers["Content-Length"] = self.body.size()
+    
+    var _headers: PoolStringArray = Operations.headers_from_dictionary(headers)
+    
+    Unirest.add_child(self)
     return request_raw(
-        r_url, 
-        Operations.headers_from_dictionary(headers), 
+        _url, 
+        _headers, 
         verify_ssl, 
         method, 
         body
@@ -77,12 +87,22 @@ func as_json() -> BaseRequest:
     as_json_async()
     return self
 
+func as_empty_async() -> int:
+    self.response_type = ResponseType.EMPTY
+    return make_request()
+
+func as_empty() -> BaseRequest:
+    as_empty_async()
+    return self
+
 func with_verify_ssl(verify_ssl: bool) -> BaseRequest:
     self.verify_ssl = verify_ssl
     return self
 
 func _on_http_request_completed(result: int, response_code: int, headers: PoolStringArray, body: PoolByteArray) -> void:
     match response_type:
+        ResponseType.EMPTY:
+            emit_signal("completed", EmptyResponse.new(headers, response_code))
         ResponseType.BINARY:
             emit_signal("completed", BaseResponse.new(body, headers, response_code))
         ResponseType.STRING:

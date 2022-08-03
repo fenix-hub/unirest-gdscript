@@ -1,7 +1,7 @@
 extends BaseRequest
 class_name MultipartRequest
 
-class_name MultipartField:
+class MultipartField:
     var name: String = ""
     var filename: String = ""
     var value: String = ""
@@ -15,11 +15,21 @@ const boundary: String = "gdunirest"
 
 var fields: Array = []
 
-func _init(url: String, method: int).(url, method) -> void:
-    pass
+func _init(base_request: BaseRequest) \
+    .(base_request.url, base_request.method, base_request.uri, base_request.headers, \
+    base_request.query_params, base_request.route_params, base_request.body) -> void:
+        pass
+    
+func basic_auth(username: String, password: String) -> MultipartRequest:
+    headers["Authorization"] = "Basic " + Marshalls.utf_to_base64("%s:%s" % [username, password])
+    return self
+
+func bearer_auth(token: String) -> MultipartRequest:
+    headers["Authorization"] = "Bearer " + token
+    return self
 
 func field(name: String, value: String, filename: String = "") -> MultipartRequest:
-    fields.append([MultipartField.new(name, value, filename)])
+    fields.append(MultipartField.new(name, value, filename))
     return self
 
 func _parse_body() -> PoolByteArray:
