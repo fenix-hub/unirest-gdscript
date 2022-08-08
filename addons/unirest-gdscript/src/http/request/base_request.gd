@@ -7,7 +7,7 @@ enum ResponseType {
     EMPTY,
     BINARY,
     STRING,
-    DICTIONARY,
+    UJSON,
 }
 
 var response_type: int
@@ -51,7 +51,6 @@ func make_request() -> int:
     
     var _headers: PoolStringArray = Operations.headers_from_dictionary(headers)
     
-    Unirest.add_child(self)
     return request_raw(
         _url, 
         _headers, 
@@ -62,6 +61,15 @@ func make_request() -> int:
 
 func _parse_body() -> PoolByteArray:
     return self.body
+
+
+func as_empty_async() -> int:
+    self.response_type = ResponseType.EMPTY
+    return make_request()
+
+func as_empty() -> BaseRequest:
+    as_empty_async()
+    return self
 
 func as_binary_async() -> int:
     self.response_type = ResponseType.BINARY
@@ -80,23 +88,20 @@ func as_string() -> BaseRequest:
     return self
 
 func as_json_async() -> int:
-    self.response_type = ResponseType.DICTIONARY
+    self.response_type = ResponseType.UJSON
     return make_request()
 
 func as_json() -> BaseRequest:
     as_json_async()
     return self
 
-func as_empty_async() -> int:
-    self.response_type = ResponseType.EMPTY
-    return make_request()
 
-func as_empty() -> BaseRequest:
-    as_empty_async()
+func with_verify_ssl(verify_ssl: bool = false) -> BaseRequest:
+    self.verify_ssl = verify_ssl
     return self
 
-func with_verify_ssl(verify_ssl: bool) -> BaseRequest:
-    self.verify_ssl = verify_ssl
+func using_threads(use_threads: bool = false) -> BaseRequest:
+    self.use_threads = use_threads
     return self
 
 func _on_http_request_completed(result: int, response_code: int, headers: PoolStringArray, body: PoolByteArray) -> void:
@@ -107,6 +112,6 @@ func _on_http_request_completed(result: int, response_code: int, headers: PoolSt
             emit_signal("completed", BaseResponse.new(body, headers, response_code))
         ResponseType.STRING:
             emit_signal("completed", StringResponse.new(body, headers, response_code))
-        ResponseType.DICTIONARY:
+        ResponseType.UJSON:
             emit_signal("completed", JsonResponse.new(body, headers, response_code))
     queue_free()

@@ -5,11 +5,11 @@ func _init(url: String, method: int).(url, method) -> void:
     pass
 
 func basic_auth(username: String, password: String) -> HttpRequestWithBody:
-    headers["Authorization"] = "Basic " + Marshalls.utf_to_base64("%s:%s" % [username, password])
+    self.headers["Authorization"] = "Basic " + Marshalls.utf_to_base64("%s:%s" % [username, password])
     return self
 
 func bearer_auth(token: String) -> HttpRequestWithBody:
-    headers["Authorization"] = "Bearer " + token
+    self.headers["Authorization"] = "Bearer " + token
     return self
 
 func body(body: PoolByteArray, content_type: String = "application/octet-stream") -> HttpRequestWithBody:
@@ -27,7 +27,7 @@ func field(name: String, value: String, filename: String = "") -> MultipartReque
     return MultipartRequest.new(self as BaseRequest).field(name, value, filename)
 
 func header(name: String, value: String) -> HttpRequestWithBody:
-    headers[name] = value
+    self.headers[name] = value
     return self
 
 func headers(headers: Dictionary) -> HttpRequestWithBody:
@@ -35,9 +35,9 @@ func headers(headers: Dictionary) -> HttpRequestWithBody:
     return self
 
 func query_string(name: String, value) -> HttpRequestWithBody:
-    query_params[name] = value
+    self.query_params[name] = value
     return self
 
 func route_param(name: String, value: String) -> HttpRequestWithBody:
-    route_params[name] = value
+    self.route_params[name] = value
     return self

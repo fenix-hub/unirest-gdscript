@@ -2,10 +2,12 @@ extends Node
 
 func _get_request(url: String, method: int) -> GetRequest:
     var http_request: GetRequest = GetRequest.new(url, method)
+    add_child(http_request)
     return http_request
     
 func _http_request(url: String, method: int) -> HttpRequestWithBody:
     var http_request: HttpRequestWithBody = HttpRequestWithBody.new(url, method)
+    add_child(http_request)
     return http_request
 
 func options(url: String) -> HttpRequestWithBody:

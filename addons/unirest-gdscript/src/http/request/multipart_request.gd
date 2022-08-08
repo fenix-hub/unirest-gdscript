@@ -21,15 +21,15 @@ func _init(base_request: BaseRequest) \
         pass
     
 func basic_auth(username: String, password: String) -> MultipartRequest:
-    headers["Authorization"] = "Basic " + Marshalls.utf_to_base64("%s:%s" % [username, password])
+    self.headers["Authorization"] = "Basic " + Marshalls.utf_to_base64("%s:%s" % [username, password])
     return self
 
 func bearer_auth(token: String) -> MultipartRequest:
-    headers["Authorization"] = "Bearer " + token
+    self.headers["Authorization"] = "Bearer " + token
     return self
 
 func field(name: String, value: String, filename: String = "") -> MultipartRequest:
-    fields.append(MultipartField.new(name, value, filename))
+    self.fields.append(MultipartField.new(name, value, filename))
     return self
 
 func _parse_body() -> PoolByteArray:

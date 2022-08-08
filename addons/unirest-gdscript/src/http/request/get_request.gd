@@ -5,11 +5,11 @@ func _init(url: String, method: int).(url, method) -> void:
     pass
 
 func basic_auth(username: String, password: String) -> GetRequest:
-    headers["Authorization"] = "Basic " + Marshalls.utf_to_base64("%s:%s" % [username, password])
+    self.headers["Authorization"] = "Basic " + Marshalls.utf_to_base64("%s:%s" % [username, password])
     return self
 
 func bearer_auth(token: String) -> GetRequest:
-    headers["Authorization"] = "Bearer " + token
+    self.headers["Authorization"] = "Bearer " + token
     return self
 
 func header(name: String, value: String) -> GetRequest:
@@ -21,9 +21,9 @@ func headers(headers: Dictionary) -> GetRequest:
     return self
 
 func query_string(name: String, value) -> GetRequest:
-    query_params[name] = value
+    self.query_params[name] = value
     return self
 
 func route_param(name: String, value: String) -> GetRequest:
-    route_params[name] = value
+    self.route_params[name] = value
     return self
