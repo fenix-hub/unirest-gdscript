@@ -1,4 +1,7 @@
+tool
 extends Node
+
+var configuration: UnirestConfiguration = load("res://addons/unirest-gdscript/src/configuration/configuration.tres")
 
 func _get_request(url: String, method: int) -> GetRequest:
     var http_request: GetRequest = GetRequest.new(url, method)
@@ -30,3 +33,6 @@ func patch(url: String) -> HttpRequestWithBody:
 
 func delete(url: String) -> HttpRequestWithBody:
     return _http_request(url, HTTPClient.METHOD_DELETE)
+
+func config() -> UnirestConfiguration:
+    return configuration

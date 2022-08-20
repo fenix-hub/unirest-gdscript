@@ -21,3 +21,6 @@ func get_array() -> Array:
 
 func get_dictionary() -> Dictionary:
     return result as Dictionary
+
+func _to_string() -> String:
+    return to_string()

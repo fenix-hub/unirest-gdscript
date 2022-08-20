@@ -5,7 +5,7 @@ func _init(url: String, method: int).(url, method) -> void:
     pass
 
 func basic_auth(username: String, password: String) -> HttpRequestWithBody:
-    self.headers["Authorization"] = "Basic " + Marshalls.utf_to_base64("%s:%s" % [username, password])
+    self.headers["Authorization"] = "Basic " + UniOperations.basic_auth_str(username, password)
     return self
 
 func bearer_auth(token: String) -> HttpRequestWithBody:

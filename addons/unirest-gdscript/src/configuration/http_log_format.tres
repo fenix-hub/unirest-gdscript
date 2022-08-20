@@ -1,0 +1,9 @@
+[gd_resource type="Resource" load_steps=2 format=2]
+
+[ext_resource path="res://addons/unirest-gdscript/src/configuration/http_log_format.gd" type="Script" id=1]
+
+[resource]
+resource_name = "HttpLogFormat"
+script = ExtResource( 1 )
+request = "[{date}] - {host} >> \"{method} {URL} {protocol}\" {bytes} \"{agent}\""
+response = "[{date}] - {host} << \"{protocol} {status} {message}\" {headers} {body} ({ttr}ms)"

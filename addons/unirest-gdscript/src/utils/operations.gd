@@ -1,6 +1,38 @@
 extends Reference
-class_name Operations
+class_name UniOperations
 
+static func http_method_int_to_string(method: int) -> String:
+    var str_method: String = "GET"
+    match method:
+        HTTPClient.METHOD_HEAD:
+            str_method = "HEAD"
+        HTTPClient.METHOD_GET:
+            pass
+        HTTPClient.METHOD_OPTIONS:
+            str_method = "OPTIONS"
+        HTTPClient.METHOD_DELETE:
+            str_method = "DELETE"
+        HTTPClient.METHOD_PATCH:
+            str_method = "PATCH"
+        HTTPClient.METHOD_PUT:
+            str_method = "PUT"
+        HTTPClient.METHOD_POST:
+            str_method = "POST"
+        HTTPClient.METHOD_TRACE:
+            str_method = "TRACE"
+    return str_method
+
+static func basic_auth_str(username: String, password: String) -> String:
+    return Marshalls.utf_to_base64("%s:%s" % [username, password])
+
+static func get_full_url(url: String, uri: String = "", route_params: Dictionary = {}, query_params: Dictionary = {}) -> String:
+    var _url: String = url.format(route_params)
+    if !uri.empty():
+        _url += "/" + uri
+    var query_string: String = query_string_from_dict(query_params)
+    if !query_string.empty():
+        _url += "?" + query_string
+    return _url   
 
 static func headers_from_dictionary(headers: Dictionary) -> PoolStringArray:
     var array: Array = []

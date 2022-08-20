@@ -1,0 +1,11 @@
+[gd_resource type="Resource" load_steps=4 format=2]
+
+[ext_resource path="res://addons/unirest-gdscript/src/configuration/configuration.gd" type="Script" id=1]
+[ext_resource path="res://addons/unirest-gdscript/src/configuration/http_log_format.tres" type="Resource" id=2]
+[ext_resource path="res://addons/unirest-gdscript/src/configuration/http_proxy.tres" type="Resource" id=3]
+
+[resource]
+resource_name = "UnriestConfiguration"
+script = ExtResource( 1 )
+http_log_format = ExtResource( 2 )
+http_proxy = ExtResource( 3 )
