@@ -11,31 +11,25 @@ enum ResponseType {
     UJSON,
 }
 
+onready var http_log_format: HttpLogFormat = get_parent().config().http_log_format
+onready var http_proxy: HttpProxy = get_parent().config().http_proxy
+
 var response_type: int
 var content_type: String
 
 var method: int = 0
-var url: String = ""
 var uri: String = ""
 var headers: Dictionary = {}
 var query_params: Dictionary = {}
 var route_params: Dictionary = {}
 var body: PoolByteArray = []
 var verify_ssl: bool = false
-var proxying: bool = false
 
-onready var http_log_format: HttpLogFormat = get_parent().config().http_log_format
-onready var http_proxy: HttpProxy = get_parent().config().http_proxy
-
-var proxy_host: String
-var proxy_port: int
-
-func _init(url: String, method: int, uri: String = "", headers: Dictionary = {},
+func _init(uri: String, method: int, headers: Dictionary = {},
     query_params: Dictionary = {}, route_params: Dictionary = {}, body: PoolByteArray = []) -> void:
     connect("request_completed", self, "_on_http_request_completed")
-    self.url = url
-    self.method = method
     self.uri = uri
+    self.method = method
     self.headers = headers
     self.query_params = query_params
     self.route_params = route_params
@@ -47,10 +41,18 @@ func _ready() -> void:
     if !(http_proxy.username.empty() and http_proxy.password.empty()):
         self.headers["Proxy-Authorization"] = \
         "Basic %s" % UniOperations.basic_auth_str(http_proxy.username, http_proxy.password)
+    
+    # Base Url
+    set_meta("base_url", get_parent().config().default_base_url)
+
+func _get_url() -> String:
+    return (get_meta("base_url") + uri) if !get_meta("base_url").empty() else uri
 
 func make_request() -> int:
     # URL
-    var _url: String = UniOperations.get_full_url(url, uri, route_params, query_params)
+    var URL: String = UniOperations.get_full_url(
+        _get_url(), route_params, query_params
+    )
     
     # BODY
     self.body = _parse_body()
@@ -63,7 +65,7 @@ func make_request() -> int:
     
     set_meta("t0_ttr", Time.get_ticks_msec())
     return request_raw(
-        _url, 
+        URL, 
         _headers, 
         verify_ssl, 
         method, 
@@ -107,10 +109,10 @@ func as_json() -> BaseRequest:
     return self
 
 func proxy(host: String, port: int) -> BaseRequest:
-    self.proxying = !(host.empty() and port == -1)
-    self.proxy_host = host
-    self.proxy_port = port
-    if url.begins_with("https"):
+    set_meta("proxying", !(host.empty() and port == -1))
+    set_meta("proxy_host", host)
+    set_meta("proxy_port", port)
+    if uri.begins_with("https"):
         set_https_proxy(host, port)
     else:
         set_http_proxy(host, port)
@@ -137,16 +139,17 @@ func _on_http_request_completed(result: int, response_code: int, headers: PoolSt
         ResponseType.UJSON:
             response = JsonResponse.new(body, headers, response_code)
     response.set_meta("ttr", ttr)
+    response.set_meta("host", UniOperations.get_host(_get_url()))
     emit_signal("completed", response)
     queue_free()
 
 func _to_string() -> String:
     return http_log_format.request \
     .format({
-        host = IP.get_local_addresses()[0] if !proxying else proxy_host,
+        host = IP.get_local_addresses()[0] if !get_meta("proxying") else get_meta("proxy_host"),
         date = Time.get_datetime_string_from_system(),
         method = UniOperations.http_method_int_to_string(method),
-        URL = UniOperations.get_full_url(url, uri, route_params, query_params),
+        URL = UniOperations.get_full_url(_get_url(), route_params, query_params),
         query = UniOperations.query_string_from_dict(query_params),
         protocol = "HTTP/1.1",
         bytes = body.size(),

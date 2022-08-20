@@ -1,7 +1,11 @@
 tool
 extends Node
 
-var configuration: UnirestConfiguration = load("res://addons/unirest-gdscript/src/configuration/configuration.tres")
+var configuration: UnirestConfiguration
+
+func _ready() -> void:
+    var conf: UnirestConfiguration = load("res://addons/unirest-gdscript/src/configuration/configuration.tres")
+    configuration = UnirestConfiguration.new(conf.http_log_format, conf.http_proxy, conf.default_base_url)
 
 func _get_request(url: String, method: int) -> GetRequest:
     var http_request: GetRequest = GetRequest.new(url, method)

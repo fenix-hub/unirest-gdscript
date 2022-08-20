@@ -25,14 +25,19 @@ static func http_method_int_to_string(method: int) -> String:
 static func basic_auth_str(username: String, password: String) -> String:
     return Marshalls.utf_to_base64("%s:%s" % [username, password])
 
-static func get_full_url(url: String, uri: String = "", route_params: Dictionary = {}, query_params: Dictionary = {}) -> String:
-    var _url: String = url.format(route_params)
-    if !uri.empty():
-        _url += "/" + uri
+static func get_host(url: String) -> String:
+    var host: String = url.split("/")[2]
+    return host
+
+static func resolve_host(host: String) -> String:
+    return IP.resolve_hostname(host) if !(":" in host) else host.right(5)
+
+static func get_full_url(base_url: String, route_params: Dictionary = {}, query_params: Dictionary = {}) -> String:
+    var URL: String = base_url.format(route_params)
     var query_string: String = query_string_from_dict(query_params)
     if !query_string.empty():
-        _url += "?" + query_string
-    return _url   
+        URL += "?" + query_string
+    return URL
 
 static func headers_from_dictionary(headers: Dictionary) -> PoolStringArray:
     var array: Array = []

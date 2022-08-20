@@ -16,7 +16,7 @@ const boundary: String = "gdunirest"
 var fields: Array = []
 
 func _init(base_request: BaseRequest) \
-    .(base_request.url, base_request.method, base_request.uri, base_request.headers, \
+    .(base_request.uri, base_request.method, base_request.headers, \
     base_request.query_params, base_request.route_params, base_request.body) -> void:
         pass
     

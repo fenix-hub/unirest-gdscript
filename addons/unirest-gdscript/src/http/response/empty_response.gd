@@ -1,6 +1,8 @@
 extends Reference
 class_name EmptyResponse
 
+var config: UnirestConfiguration = load("res://addons/unirest-gdscript/src/configuration/configuration.tres")
+
 var headers: Dictionary
 var status: int
 
@@ -15,9 +17,9 @@ func get_status() -> int:
     return status
 
 func _to_string() -> String:
-    return Unirest.config().http_log_format.response \
+    return config.http_log_format.response \
     .format({
-        host = IP.get_local_addresses()[0],
+        host = UniOperations.resolve_host(get_meta("host")),
         date = Time.get_datetime_string_from_system(),
         headers = self.headers,
         status = self.status,

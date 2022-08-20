@@ -11,3 +11,8 @@ func _init(body: PoolByteArray, headers: PoolStringArray, status: int).(body, he
 
 func get_body() -> String:
     return _body
+
+func _to_string() -> String:
+    return ._to_string().format({
+        body = self._body
+       })

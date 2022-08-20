@@ -9,3 +9,4 @@ resource_name = "UnriestConfiguration"
 script = ExtResource( 1 )
 http_log_format = ExtResource( 2 )
 http_proxy = ExtResource( 3 )
+default_base_url = ""

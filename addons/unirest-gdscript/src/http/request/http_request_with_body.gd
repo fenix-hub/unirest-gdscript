@@ -1,7 +1,7 @@
 extends BaseRequest
 class_name HttpRequestWithBody
 
-func _init(url: String, method: int).(url, method) -> void:
+func _init(uri: String, method: int).(uri, method) -> void:
     pass
 
 func basic_auth(username: String, password: String) -> HttpRequestWithBody:
