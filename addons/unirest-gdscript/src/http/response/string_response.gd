@@ -6,7 +6,7 @@ var _body: String
 func _parse_body(raw_body: PoolByteArray) -> void:
     _body = raw_body.get_string_from_utf8()
 
-func _init(body: PoolByteArray, headers: PoolStringArray, status: int).(body, headers, status) -> void:
+func _init(body: PoolByteArray, headers: PoolStringArray, status: int, code: int).(body, headers, status, code) -> void:
     pass
 
 func get_body() -> String:

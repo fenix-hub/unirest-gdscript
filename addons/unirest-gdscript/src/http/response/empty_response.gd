@@ -5,14 +5,22 @@ var config: UnirestConfiguration = load("res://addons/unirest-gdscript/src/confi
 
 var headers: Dictionary
 var status: int
-var error: UnirestError = UnirestError.new()
+var error: UnirestError = null
 
-func _init(headers: PoolStringArray, status: int) -> void:
-    self.headers = UniOperations.dictionary_to_headers(headers)
-    self.status = status
-    if (status in [300, 500]):
-        self.error.cause = UnirestError.Cause.REQUEST
-        self.error.message = "status is %s" % status
+func _init(headers: PoolStringArray, status: int, code: int, raw_body: PoolByteArray) -> void:
+    if code > 0:
+        error = UnirestError.new(
+            {type = "HttpClient error", code = code}, 
+            "HttpClient error is %s" % code
+        )
+    else:
+        self.headers = UniOperations.dictionary_to_headers(headers)
+        self.status = status
+        if (status in [300, 500]):
+            error = UnirestError.new(
+                {status = status}, 
+                "HTTP Status Code is %s" % status, raw_body.get_string_from_utf8()
+            )
 
 func get_headers() -> Dictionary:
     return headers

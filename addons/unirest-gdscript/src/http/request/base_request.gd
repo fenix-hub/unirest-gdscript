@@ -54,6 +54,13 @@ func make_request() -> int:
         _get_url(), route_params, query_params
     )
     
+    # PROXY
+    if get_meta("proxying"):
+        if URL.begins_with("https"):
+            set_https_proxy(get_meta("proxy_host"), get_meta("proxy_port"))
+        else:
+            set_http_proxy(get_meta("proxy_host"), get_meta("proxy_port"))
+    
     # BODY
     self.body = _parse_body()
 
@@ -112,10 +119,6 @@ func proxy(host: String, port: int) -> BaseRequest:
     set_meta("proxying", !(host.empty() and port == -1))
     set_meta("proxy_host", host)
     set_meta("proxy_port", port)
-    if uri.begins_with("https"):
-        set_https_proxy(host, port)
-    else:
-        set_http_proxy(host, port)
     return self
 
 func with_verify_ssl(verify_ssl: bool = false) -> BaseRequest:
@@ -131,13 +134,13 @@ func _on_http_request_completed(result: int, response_code: int, headers: PoolSt
     var response: EmptyResponse
     match response_type:
         ResponseType.EMPTY:
-            response = EmptyResponse.new(headers, response_code)
+            response = EmptyResponse.new(headers, response_code, result, body)
         ResponseType.BINARY:
-            response = BaseResponse.new(body, headers, response_code)
+            response = BaseResponse.new(body, headers, response_code, result)
         ResponseType.STRING:
-            response = StringResponse.new(body, headers, response_code)
+            response = StringResponse.new(body, headers, response_code, result)
         ResponseType.UJSON:
-            response = JsonResponse.new(body, headers, response_code)
+            response = JsonResponse.new(body, headers, response_code, result)
     response.set_meta("ttr", ttr)
     response.set_meta("host", UniOperations.get_host(_get_url()))
     emit_signal("completed", response)

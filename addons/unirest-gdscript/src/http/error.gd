@@ -1,27 +1,27 @@
 extends Reference
 class_name UnirestError
 
-enum Cause {
-    NONE
-    REQUEST
-    PARSING
-   }
-
-var cause: int
+var cause: Dictionary
 var message: String
-var body: PoolByteArray
+var original_body: String
 
-func _init(cause: int = Cause.NONE, message: String = "", body: PoolByteArray = []) -> void:
+func _init(cause: Dictionary, message: String = "", original_body: String = "") -> void:
     self.cause = cause
     self.message = message
-    self.body = body
+    self.original_body = original_body
 
-func body_as_string() -> String:
-    return body.get_string_from_utf8()
+func get_cause() -> Dictionary:
+    return self.cause
 
-func body_as_json() -> JsonNode:
-    var parse: JSONParseResult = JSON.parse(body.get_string_from_utf8())
-    if !parse.error:
-        return JsonNode.new(parse.result)
-    else:
-        return null
+func get_message() -> String:
+    return self.message
+
+func get_original_body() -> String:
+    return self.original_body
+
+func _to_string() -> String:
+    return String({
+        cause = cause,
+        message = message,
+        original_body = original_body
+    })
