@@ -148,7 +148,7 @@ func _to_string() -> String:
         method = UniOperations.http_method_int_to_string(method),
         URL = UniOperations.get_full_url(url, uri, route_params, query_params),
         query = UniOperations.query_string_from_dict(query_params),
-        protocol = "HTTP/1.0",
+        protocol = "HTTP/1.1",
         bytes = body.size(),
-        agent = "Unirest/1.0 (Godot Engine %s)" % Engine.get_version_info().hex 
+        agent = "Unirest/1.2 (Godot Engine %s)" % Engine.get_version_info().hex 
        })
