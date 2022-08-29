@@ -15,4 +15,4 @@ func get_body() -> String:
 func _to_string() -> String:
     return ._to_string().format({
         body = self._body
-       })
+    })

@@ -3,11 +3,14 @@ class_name EmptyResponse
 
 var config: UnirestConfiguration = load("res://addons/unirest-gdscript/src/configuration/configuration.tres")
 
+var props: Dictionary
+
 var headers: Dictionary
 var status: int
 var error: UnirestError = null
 
-func _init(headers: PoolStringArray, status: int, code: int, raw_body: PoolByteArray) -> void:
+func _init(headers: PoolStringArray, status: int, code: int, raw_body: PoolByteArray, props: Dictionary = {}) -> void:
+    self.props = props
     if code > 0:
         error = UnirestError.new(
             {type = "HttpClient error", code = code}, 

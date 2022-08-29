@@ -3,7 +3,8 @@ class_name BaseResponse
 
 var raw_body: PoolByteArray
 
-func _init(body: PoolByteArray, headers: PoolStringArray, status: int, code: int).(headers, status, code, body) -> void:
+func _init(body: PoolByteArray, headers: PoolStringArray, status: int, code: int, props: Dictionary = {}) \
+.(headers, status, code, body, props) -> void:
     if code == 0:
         self.raw_body = body
         _parse_body(raw_body)

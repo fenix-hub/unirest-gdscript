@@ -9,6 +9,7 @@ enum ResponseType {
     BINARY,
     STRING,
     UJSON,
+    OBJECT,
 }
 
 onready var http_log_format: HttpLogFormat = get_parent().config().http_log_format
@@ -23,6 +24,7 @@ var headers: Dictionary = {}
 var query_params: Dictionary = {}
 var route_params: Dictionary = {}
 var body: PoolByteArray = []
+var object: Object = null
 var verify_ssl: bool = false
 
 func _init(uri: String, method: int, headers: Dictionary = {},
@@ -115,6 +117,15 @@ func as_json() -> BaseRequest:
     as_json_async()
     return self
 
+func as_object_async(object: Object) -> int:
+    self.response_type = ResponseType.OBJECT
+    self.object = object
+    return make_request()
+
+func as_object(object: Object) -> BaseRequest:
+    as_object_async(object)
+    return self
+
 func proxy(host: String, port: int) -> BaseRequest:
     set_meta("proxying", !(host.empty() and port == -1))
     set_meta("proxy_host", host)
@@ -141,6 +152,8 @@ func _on_http_request_completed(result: int, response_code: int, headers: PoolSt
             response = StringResponse.new(body, headers, response_code, result)
         ResponseType.UJSON:
             response = JsonResponse.new(body, headers, response_code, result)
+        ResponseType.OBJECT:
+            response = ObjectResponse.new(body, headers, response_code, result, object)
     response.set_meta("ttr", ttr)
     response.set_meta("host", UniOperations.get_host(_get_url()))
     emit_signal("completed", response)

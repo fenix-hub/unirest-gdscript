@@ -2,12 +2,10 @@ extends Reference
 class_name UniOperations
 
 static func http_method_int_to_string(method: int) -> String:
-    var str_method: String = "GET"
+    var str_method: String = ""
     match method:
         HTTPClient.METHOD_HEAD:
             str_method = "HEAD"
-        HTTPClient.METHOD_GET:
-            pass
         HTTPClient.METHOD_OPTIONS:
             str_method = "OPTIONS"
         HTTPClient.METHOD_DELETE:
@@ -20,6 +18,8 @@ static func http_method_int_to_string(method: int) -> String:
             str_method = "POST"
         HTTPClient.METHOD_TRACE:
             str_method = "TRACE"
+        HTTPClient.METHOD_GET, _:
+            str_method = "GET"
     return str_method
 
 static func basic_auth_str(username: String, password: String) -> String:
@@ -67,3 +67,37 @@ static func query_array_from_dict(query: Dictionary) -> PoolStringArray:
 
 static func query_string_from_dict(query: Dictionary) -> String:
     return query_array_from_dict(query).join("&")
+
+static func json_to_class(json: Dictionary, _class: Object) -> Object:
+    var properties: Array = _class.get_property_list()
+    for key in json.keys():
+        for property in properties:
+            if property.name == key and property.usage >= (1 << 13):
+                if (property["class_name"] in ["Reference", "Object"] and property["type"] == 17):
+                    _class.set(key, json_to_class(json[key], _class.get(key)))
+                else:
+                    _class.set(key, json[key])
+                break
+            if key == property.hint_string and property.usage >= (1 << 13):
+                if (property["class_name"] in ["Reference", "Object"] and property["type"] == 17):
+                    _class.set(property.name, json_to_class(json[key], _class.get(key)))
+                else:
+                    _class.set(property.name, json[key])
+                break
+    return _class
+
+static func class_to_json(_class: Object) -> Dictionary:
+    var dictionary: Dictionary = {}
+    var properties: Array = _class.get_property_list()
+    for property in properties:
+        if not property["name"].empty() and property.usage >= (1 << 13):
+            if (property["class_name"] in ["Reference", "Object"] and property["type"] == 17):
+                dictionary[property.name] = class_to_json(_class.get(property.name))
+            else:
+                dictionary[property.name] = _class.get(property.name)
+        if not property["hint_string"].empty() and property.usage >= (1 << 13):
+            if (property["class_name"] in ["Reference", "Object"] and property["type"] == 17):
+                dictionary[property.hint_string] = class_to_json(_class.get(property.name))
+            else:
+                dictionary[property.hint_string] = _class.get(property.name)
+    return dictionary

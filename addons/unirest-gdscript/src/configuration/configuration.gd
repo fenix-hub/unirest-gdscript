@@ -7,7 +7,7 @@ export (String) var default_base_url: String
 
 func _init(
     http_log_format: HttpLogFormat = HttpLogFormat.new("", ""), 
-    http_proxy: HttpProxy = HttpProxy.new("", -1), 
+    http_proxy: HttpProxy = HttpProxy.new("", -1),
     default_base_url: String = ""
     ) -> void:
     self.http_log_format = http_log_format
@@ -23,3 +23,6 @@ func proxy(host: String, port: int, username: String = "", password: String = ""
 func log_format(request: String, response: String) -> void:
     http_log_format.request = request
     http_log_format.response = response
+
+func client_certificate_store(cert_path: String) -> void:
+    ProjectSettings.set_setting("network/ssl/certificates", cert_path)
