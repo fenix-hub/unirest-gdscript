@@ -5,7 +5,10 @@ var configuration: UnirestConfiguration
 
 func _ready() -> void:
     var conf: UnirestConfiguration = load("res://addons/unirest-gdscript/src/configuration/configuration.tres")
-    configuration = UnirestConfiguration.new(conf.http_log_format, conf.http_proxy, conf.default_base_url)
+    configuration = UnirestConfiguration.new()
+    configuration.http_log_format = conf.http_log_format
+    configuration.http_proxy = conf.http_proxy
+    configuration.default_base_url = conf.default_base_url
 
 func _get_request(url: String, method: int) -> GetRequest:
     var http_request: GetRequest = GetRequest.new(url, method)
