@@ -39,10 +39,11 @@ func _init(uri: String, method: int, headers: Dictionary = {},
 
 func _ready() -> void:
     # Check if proxy is enabled from configuration
-    proxy(http_proxy.host, http_proxy.port)
-    if !(http_proxy.username.empty() and http_proxy.password.empty()):
-        self.headers["Proxy-Authorization"] = \
-        "Basic %s" % UniOperations.basic_auth_str(http_proxy.username, http_proxy.password)
+    if (http_proxy.host != null and http_proxy.port != null):
+        proxy(http_proxy.host, http_proxy.port)
+        if !(http_proxy.username.empty() and http_proxy.password.empty()):
+            self.headers["Proxy-Authorization"] = \
+            "Basic %s" % UniOperations.basic_auth_str(http_proxy.username, http_proxy.password)
     
     # Base Url
     set_meta("base_url", get_parent().config().default_base_url)
