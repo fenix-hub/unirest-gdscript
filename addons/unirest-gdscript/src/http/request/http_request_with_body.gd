@@ -12,13 +12,16 @@ func bearer_auth(token: String) -> HttpRequestWithBody:
     self.headers["Authorization"] = "Bearer " + token
     return self
 
-func body(body: PoolByteArray, content_type: String = "application/octet-stream") -> HttpRequestWithBody:
+func body(body: Object) -> HttpRequestWithBody:
+    return dict_body(UniOperations.class_to_json(body))
+
+func raw_body(body: PoolByteArray, content_type: String = "application/octet-stream") -> HttpRequestWithBody:
     self.content_type = content_type
     self.body = body
     return self
 
-func str_body(string_body: String, concent_type: String = "text/plain") -> HttpRequestWithBody:
-    return body(string_body.to_utf8(), concent_type)
+func str_body(string_body: String, content_type: String = "text/plain") -> HttpRequestWithBody:
+    return raw_body(string_body.to_utf8(), content_type)
 
 func dict_body(dictionary_body: Dictionary) -> HttpRequestWithBody:
     return str_body(String(dictionary_body), "application/json")

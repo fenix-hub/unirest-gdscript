@@ -62,7 +62,15 @@ static func dictionary_to_headers(headers: PoolStringArray) -> Dictionary:
 static func query_array_from_dict(query: Dictionary) -> PoolStringArray:
     var array: Array = []
     for key in query.keys():
-        array.append("%s=%s" % [key, query.get(key)])
+        match typeof(query[key]):
+            TYPE_ARRAY:
+                for value in query.get(key):
+                    array.append("%s=%s" % [key, value])
+            TYPE_DICTIONARY:
+                for k_key in query.get(key).keys():
+                    array.append("%s=%s" % [k_key, ])
+            _:
+                array.append("%s=%s" % [key, query.get(key)])
     return PoolStringArray(array)
 
 static func query_string_from_dict(query: Dictionary) -> String:
