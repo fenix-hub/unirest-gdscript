@@ -80,7 +80,7 @@ static func json_string_to_class(json_string: String, _class: Object) -> Object:
     var parse_result: JSONParseResult = JSON.parse(json_string)
     if !parse_result.error:
         return json_to_class(parse_result.result, _class)
-    return null
+    return _class
 
 static func json_to_class(json: Dictionary, _class: Object) -> Object:
     var properties: Array = _class.get_property_list()
