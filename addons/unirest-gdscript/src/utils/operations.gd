@@ -76,6 +76,12 @@ static func query_array_from_dict(query: Dictionary) -> PoolStringArray:
 static func query_string_from_dict(query: Dictionary) -> String:
     return query_array_from_dict(query).join("&")
 
+static func json_string_to_class(json_string: String, _class: Object) -> Object:
+    var parse_result: JSONParseResult = JSON.parse(json_string)
+    if !parse_result.error:
+        return json_to_class(parse_result.result, _class)
+    return null
+
 static func json_to_class(json: Dictionary, _class: Object) -> Object:
     var properties: Array = _class.get_property_list()
     for key in json.keys():
@@ -93,6 +99,9 @@ static func json_to_class(json: Dictionary, _class: Object) -> Object:
                     _class.set(property.name, json[key])
                 break
     return _class
+
+static func class_to_json_string(_class: Object) -> String:
+    return JSON.print(class_to_json(_class))
 
 static func class_to_json(_class: Object) -> Dictionary:
     var dictionary: Dictionary = {}
