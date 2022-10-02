@@ -36,5 +36,5 @@ func get_body() -> Object:
 
 func _to_string() -> String:
     return super._to_string().format({
-        body = self._obj
+        body = self._body
     })

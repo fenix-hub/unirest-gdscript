@@ -12,9 +12,6 @@ func is_array() -> bool:
 func is_dict() -> bool:
     return (typeof(result) == TYPE_DICTIONARY)
 
-func to_string() -> String:
-    return JSON.stringify(result)
-
 # Untyped return
 func get_result():
     return result
@@ -30,4 +27,4 @@ func get_dictionary() -> Dictionary:
     return _res
 
 func _to_string() -> String:
-    return to_string()
+    return JSON.stringify(result)
