@@ -1,16 +1,19 @@
 extends EmptyResponse
 class_name BaseResponse
 
-var raw_body: PoolByteArray
+var raw_body: PackedByteArray
 
-func _init(body: PoolByteArray, headers: PoolStringArray, status: int, code: int, props: Dictionary = {}) \
-.(headers, status, code, body, props) -> void:
+func _init(
+    body: PackedByteArray, headers: PackedStringArray, status: int, 
+    code: int, props: Dictionary = {}
+    ) -> void:
+    super(headers, status, code, body, props)
     if code == 0:
         self.raw_body = body
         _parse_body(raw_body)
 
 # @override
-func _parse_body(body: PoolByteArray) -> void:
+func _parse_body(body: PackedByteArray) -> void:
     pass
 
 func get_body():

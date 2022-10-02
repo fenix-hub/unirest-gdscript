@@ -1,9 +1,10 @@
-[gd_resource type="Resource" load_steps=2 format=2]
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://6c0f7fftersw"]
 
-[ext_resource path="res://addons/unirest-gdscript/src/configuration/http_log_format.gd" type="Script" id=1]
+[ext_resource type="Script" path="res://addons/unirest-gdscript/src/configuration/http_log_format.gd" id="1_3l0rp"]
 
 [resource]
+resource_local_to_scene = true
 resource_name = "HttpLogFormat"
-script = ExtResource( 1 )
-request = "[{date}] - {host} >> \"{method} {URL} {protocol}\" {bytes} \"{agent}\""
+script = ExtResource("1_3l0rp")
+request = "[{date}] - {host} >> \"{method} {URI} {protocol}\" {bytes} \"{agent}\""
 response = "[{date}] - {host} << \"{protocol} {status} {message}\" {headers} {body} ({ttr}ms)"

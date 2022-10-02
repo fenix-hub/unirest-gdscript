@@ -1,7 +1,5 @@
-extends Reference
+extends RefCounted
 class_name EmptyResponse
-
-var config: UnirestConfiguration = load("res://addons/unirest-gdscript/src/configuration/configuration.tres")
 
 var props: Dictionary
 
@@ -9,7 +7,7 @@ var headers: Dictionary
 var status: int
 var error: UnirestError = null
 
-func _init(headers: PoolStringArray, status: int, code: int, raw_body: PoolByteArray, props: Dictionary = {}) -> void:
+func _init(headers: PackedStringArray, status: int, code: int, raw_body: PackedByteArray, props: Dictionary = {}) -> void:
     self.props = props
     if code > 0:
         error = UnirestError.new(
@@ -32,8 +30,7 @@ func get_status() -> int:
     return status
 
 func _to_string() -> String:
-    return config.http_log_format.response \
-    .format({
+    return props.log_format.format({
         host = UniOperations.resolve_host(get_meta("host")),
         date = Time.get_datetime_string_from_system(),
         headers = self.headers,

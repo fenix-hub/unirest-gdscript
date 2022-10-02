@@ -1,0 +1,118 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+_global_script_classes=[{
+"base": "HTTPRequest",
+"class": &"BaseRequest",
+"language": &"GDScript",
+"path": "res://addons/unirest-gdscript/src/http/request/base_request.gd"
+}, {
+"base": "EmptyResponse",
+"class": &"BaseResponse",
+"language": &"GDScript",
+"path": "res://addons/unirest-gdscript/src/http/response/base_response.gd"
+}, {
+"base": "RefCounted",
+"class": &"EmptyResponse",
+"language": &"GDScript",
+"path": "res://addons/unirest-gdscript/src/http/response/empty_response.gd"
+}, {
+"base": "BaseRequest",
+"class": &"GetRequest",
+"language": &"GDScript",
+"path": "res://addons/unirest-gdscript/src/http/request/get_request.gd"
+}, {
+"base": "Resource",
+"class": &"HttpLogFormat",
+"language": &"GDScript",
+"path": "res://addons/unirest-gdscript/src/configuration/http_log_format.gd"
+}, {
+"base": "Resource",
+"class": &"HttpProxy",
+"language": &"GDScript",
+"path": "res://addons/unirest-gdscript/src/configuration/http_proxy.gd"
+}, {
+"base": "BaseRequest",
+"class": &"HttpRequestWithBody",
+"language": &"GDScript",
+"path": "res://addons/unirest-gdscript/src/http/request/http_request_with_body.gd"
+}, {
+"base": "RefCounted",
+"class": &"JsonNode",
+"language": &"GDScript",
+"path": "res://addons/unirest-gdscript/src/utils/json_node.gd"
+}, {
+"base": "BaseResponse",
+"class": &"JsonResponse",
+"language": &"GDScript",
+"path": "res://addons/unirest-gdscript/src/http/response/json_response.gd"
+}, {
+"base": "BaseRequest",
+"class": &"MultipartRequest",
+"language": &"GDScript",
+"path": "res://addons/unirest-gdscript/src/http/request/multipart_request.gd"
+}, {
+"base": "BaseResponse",
+"class": &"ObjectResponse",
+"language": &"GDScript",
+"path": "res://addons/unirest-gdscript/src/http/response/object_response.gd"
+}, {
+"base": "BaseResponse",
+"class": &"StringResponse",
+"language": &"GDScript",
+"path": "res://addons/unirest-gdscript/src/http/response/string_response.gd"
+}, {
+"base": "RefCounted",
+"class": &"UniOperations",
+"language": &"GDScript",
+"path": "res://addons/unirest-gdscript/src/utils/operations.gd"
+}, {
+"base": "Resource",
+"class": &"UnirestConfig",
+"language": &"GDScript",
+"path": "res://addons/unirest-gdscript/src/configuration/configuration.gd"
+}, {
+"base": "RefCounted",
+"class": &"UnirestError",
+"language": &"GDScript",
+"path": "res://addons/unirest-gdscript/src/http/error.gd"
+}]
+_global_script_class_icons={
+"BaseRequest": "",
+"BaseResponse": "",
+"EmptyResponse": "",
+"GetRequest": "",
+"HttpLogFormat": "",
+"HttpProxy": "",
+"HttpRequestWithBody": "",
+"JsonNode": "",
+"JsonResponse": "",
+"MultipartRequest": "",
+"ObjectResponse": "",
+"StringResponse": "",
+"UniOperations": "",
+"UnirestConfig": "",
+"UnirestError": ""
+}
+
+[application]
+
+config/name="Unirest-gdscript"
+run/main_scene="res://scn/control.tscn"
+config/features=PackedStringArray("4.0", "Forward Plus")
+config/icon="res://icon.svg"
+
+[autoload]
+
+Unirest="*res://addons/unirest-gdscript/src/unirest.gd"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/unirest-gdscript/plugin.cfg")

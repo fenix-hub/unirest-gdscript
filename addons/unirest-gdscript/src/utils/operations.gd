@@ -1,4 +1,4 @@
-extends Reference
+extends RefCounted
 class_name UniOperations
 
 static func http_method_int_to_string(method: int) -> String:
@@ -23,7 +23,7 @@ static func http_method_int_to_string(method: int) -> String:
     return str_method
 
 static func basic_auth_str(username: String, password: String) -> String:
-    return Marshalls.utf_to_base64("%s:%s" % [username, password])
+    return Marshalls.utf8_to_base64("%s:%s" % [username, password])
 
 static func get_host(url: String) -> String:
     var host: String = url.split("/")[2]
@@ -35,17 +35,17 @@ static func resolve_host(host: String) -> String:
 static func get_full_url(base_url: String, route_params: Dictionary = {}, query_params: Dictionary = {}) -> String:
     var URL: String = base_url.format(route_params)
     var query_string: String = query_string_from_dict(query_params)
-    if !query_string.empty():
+    if !query_string.is_empty():
         URL += "?" + query_string
     return URL
 
-static func headers_from_dictionary(headers: Dictionary) -> PoolStringArray:
+static func headers_from_dictionary(headers: Dictionary) -> PackedStringArray:
     var array: Array = []
     for key in headers.keys():
         array.append("%s: %s" % [key, headers.get(key)])
-    return PoolStringArray(array)
+    return PackedStringArray(array)
 
-static func dictionary_to_headers(headers: PoolStringArray) -> Dictionary:
+static func dictionary_to_headers(headers: PackedStringArray) -> Dictionary:
     var dictionary: Dictionary = {}
     for header in headers:
         var kv: Array = header.split(": ")
@@ -53,13 +53,11 @@ static func dictionary_to_headers(headers: PoolStringArray) -> Dictionary:
         var value = kv[1]
         if (value.begins_with("{") and value.ends_with("}")) \
         or (value.begins_with("[") and value.ends_with("]")):
-            var parse: JSONParseResult = JSON.parse(value)
-            if parse.error == OK:
-                value = parse.result
+            value = JSON.parse_string(value)
         dictionary[name] = value
     return dictionary
 
-static func query_array_from_dict(query: Dictionary) -> PoolStringArray:
+static func query_array_from_dict(query: Dictionary) -> PackedStringArray:
     var array: Array = []
     for key in query.keys():
         match typeof(query[key]):
@@ -71,15 +69,15 @@ static func query_array_from_dict(query: Dictionary) -> PoolStringArray:
                     array.append("%s=%s" % [k_key, ])
             _:
                 array.append("%s=%s" % [key, query.get(key)])
-    return PoolStringArray(array)
+    return PackedStringArray(array)
 
 static func query_string_from_dict(query: Dictionary) -> String:
-    return query_array_from_dict(query).join("&")
+    return "".join(query_array_from_dict(query))
 
 static func json_string_to_class(json_string: String, _class: Object) -> Object:
-    var parse_result: JSONParseResult = JSON.parse(json_string)
-    if !parse_result.error:
-        return json_to_class(parse_result.result, _class)
+    var json: JSON = JSON.new()
+    if json.parse(json_string) == OK:
+        return json_to_class(json.data, _class)
     return _class
 
 static func json_to_class(json: Dictionary, _class: Object) -> Object:
@@ -101,7 +99,7 @@ static func json_to_class(json: Dictionary, _class: Object) -> Object:
     return _class
 
 static func class_to_json_string(_class: Object) -> String:
-    return JSON.print(class_to_json(_class))
+    return JSON.stringify(class_to_json(_class))
 
 static func class_to_json(_class: Object) -> Dictionary:
     var dictionary: Dictionary = {}

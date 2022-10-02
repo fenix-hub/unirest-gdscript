@@ -1,4 +1,4 @@
-extends Reference
+extends RefCounted
 class_name JsonNode
 
 var result = null
@@ -9,18 +9,25 @@ func _init(result) -> void:
 func is_array() -> bool:
     return (typeof(result) == TYPE_ARRAY)
 
+func is_dict() -> bool:
+    return (typeof(result) == TYPE_DICTIONARY)
+
 func to_string() -> String:
-    return JSON.print(result)
+    return JSON.stringify(result)
 
 # Untyped return
 func get_result():
     return result
 
 func get_array() -> Array:
-    return result as Array
+    assert(is_array(), "Result is not an array!")
+    var _res: Array = result
+    return _res
 
 func get_dictionary() -> Dictionary:
-    return result as Dictionary
+    assert(is_dict(), "Result is not a dictionary!")
+    var _res: Dictionary = result
+    return _res
 
 func _to_string() -> String:
     return to_string()

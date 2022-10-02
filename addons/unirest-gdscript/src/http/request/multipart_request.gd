@@ -15,24 +15,17 @@ const boundary: String = "gdunirest"
 
 var fields: Array = []
 
-func _init(base_request: BaseRequest) \
-    .(base_request.uri, base_request.method, base_request.headers, \
-    base_request.query_params, base_request.route_params, base_request.body) -> void:
-        pass
-    
-func basic_auth(username: String, password: String) -> MultipartRequest:
-    self.headers["Authorization"] = "Basic " + UniOperations.basic_auth_str(username, password)
-    return self
-
-func bearer_auth(token: String) -> MultipartRequest:
-    self.headers["Authorization"] = "Bearer " + token
-    return self
+func _init(base_request: BaseRequest) -> void:
+    super(
+        base_request.uri, base_request.method, base_request._headers,
+        base_request.query_params, base_request.route_params, base_request._body
+    )
 
 func field(name: String, value: String, filename: String = "") -> MultipartRequest:
     self.fields.append(MultipartField.new(name, value, filename))
     return self
 
-func _parse_body() -> PoolByteArray:
+func _parse_body() -> PackedByteArray:
     self.content_type = "multipart/form-data; boundary=" + boundary
     var body: String = ""
     for field in fields:
@@ -42,4 +35,4 @@ func _parse_body() -> PoolByteArray:
             body += "; filename=" + field.filename
         body += "\n\n%s\n" % field.value
     body += "--%s--" % boundary
-    return body.to_utf8()
+    return body.to_utf8_buffer()

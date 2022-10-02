@@ -1,4 +1,4 @@
-extends Reference
+extends RefCounted
 class_name UnirestError
 
 var cause: Dictionary
@@ -20,7 +20,7 @@ func get_original_body() -> String:
     return self.original_body
 
 func _to_string() -> String:
-    return String({
+    return str({
         cause = cause,
         message = message,
         original_body = original_body
