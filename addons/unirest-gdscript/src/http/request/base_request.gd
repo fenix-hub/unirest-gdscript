@@ -15,7 +15,7 @@ enum ResponseType {
 var http_log_format: HttpLogFormat
 var http_proxy: HttpProxy
 
-var response_type: int
+var response_type: ResponseType
 var content_type: String
 
 var method: int = 0
@@ -24,7 +24,6 @@ var _headers: Dictionary = {}
 var _body: PackedByteArray = []
 var query_params: Dictionary = {}
 var route_params: Dictionary = {}
-var object: Object = null
 var verify_ssl: bool = false
 
 func _init(
@@ -42,9 +41,6 @@ func _init(
 func _ready() -> void:
     http_proxy = get_parent().config.http_proxy
     http_log_format = get_parent().config.http_log_format
-    
-    print(http_proxy)
-    print(http_log_format)
         
     # Check if proxy is enabled from configuration
     if (http_proxy.host != null and http_proxy.port != null):
@@ -54,13 +50,15 @@ func _ready() -> void:
             "Basic %s" % UniOperations.basic_auth_str(http_proxy.username, http_proxy.password)
     
     # Base Url
-    if not get_parent().config().default_base_url.is_empty():
-        set_meta("base_url", get_parent().config().default_base_url)
+    if not get_parent().config.default_base_url.is_empty():
+        set_meta("base_url", get_parent().config.default_base_url)
 
 func _get_url() -> String:
     return (get_meta("base_url", "") + uri)
 
-func make_request() -> int:
+func make_request(response_type: ResponseType) -> int:
+    self.response_type = response_type
+    
     # URL
     var URL: String = UniOperations.get_full_url(
         _get_url(), route_params, query_params
@@ -94,49 +92,59 @@ func make_request() -> int:
 func _parse_body() -> PackedByteArray:
     return self._body
 
+func _as(type: ResponseType) -> BaseResponse:
+    make_request(type)
+    return await completed
 
-func as_empty_async() -> int:
-    self.response_type = ResponseType.EMPTY
-    return make_request()
-
-func as_empty() -> void:
-    as_empty_async()
-    var _completed = await completed
-    print(_completed)
-#    return EmptyResponse.new(_headers, response_code, result, _body)
-
-func as_binary_async() -> int:
-    self.response_type = ResponseType.BINARY
-    return make_request()
+func _as_async(type: ResponseType, callback: Callable = Callable()) -> BaseRequest:
+    if not callback.is_null():
+        self.completed.connect(callback, Object.ConnectFlags.CONNECT_ONE_SHOT)
+    make_request(type)
+    return self
     
-func as_binary() -> BaseRequest:
-    as_binary_async()
-    return self
 
-func as_string_async() -> int:
-    self.response_type = ResponseType.STRING
-    return make_request()
+## EMPTY
+func as_empty() -> EmptyResponse:
+    return await _as(ResponseType.EMPTY)
 
-func as_string() -> BaseRequest:
-    as_string_async()
-    return self
+func as_empty_async(callback: Callable = Callable()) -> BaseRequest:
+    return _as_async(ResponseType.EMPTY, callback)
 
-func as_json_async() -> int:
-    self.response_type = ResponseType.UJSON
-    return make_request()
 
-func as_json() -> BaseRequest:
-    as_json_async()
-    return self
+## BINARY
+func as_binary() -> BaseResponse:
+    return await _as(ResponseType.BINARY)
 
-func as_object_async(object: Object) -> int:
-    self.response_type = ResponseType.OBJECT
-    self.object = object
-    return make_request()
+func as_binary_async(callback: Callable = Callable()) -> BaseRequest:
+    return _as_async(ResponseType.BINARY, callback)
 
-func as_object(object: Object) -> BaseRequest:
-    as_object_async(object)
-    return self
+
+## STRING
+func as_string() -> StringResponse:
+    return await _as(ResponseType.STRING)
+
+func as_string_async(callback: Callable = Callable()) -> BaseRequest:
+    return _as_async(ResponseType.STRING, callback)
+
+
+## JSON
+func as_json() -> JsonResponse:
+    return await _as(ResponseType.UJSON)
+
+func as_json_async(callback: Callable = Callable()) -> BaseRequest:
+    return _as_async(ResponseType.UJSON, callback)
+
+
+## OBJECT
+func as_object(object: Object) -> ObjectResponse:
+    set_meta("object", object)
+    return await _as(ResponseType.OBJECT)
+
+func as_object_async(object: Object, callback: Callable = Callable()) -> BaseRequest:
+    set_meta("object", object)
+    return _as_async(ResponseType.OBJECT, callback)
+
+
 
 func proxy(host: String, port: int) -> BaseRequest:
     set_meta("proxying", !(host.is_empty() and port == -1))
@@ -165,9 +173,10 @@ func _on_http_request_completed(result: int, response_code: int, _headers: Packe
         ResponseType.UJSON:
             response = JsonResponse.new(_body, _headers, response_code, result)
         ResponseType.OBJECT:
-            response = ObjectResponse.new(_body, _headers, response_code, result, object)
+            response = ObjectResponse.new(_body, _headers, response_code, result, get_meta("object"))
     response.set_meta("ttr", ttr)
     response.set_meta("host", UniOperations.get_host(_get_url()))
+    response.set_meta("log_format", http_log_format.response)
     emit_signal("completed", response)
     queue_free()
 

@@ -30,7 +30,7 @@ func get_status() -> int:
     return status
 
 func _to_string() -> String:
-    return props.log_format.format({
+    return get_meta("log_format", "").format({
         host = UniOperations.resolve_host(get_meta("host")),
         date = Time.get_datetime_string_from_system(),
         headers = self.headers,

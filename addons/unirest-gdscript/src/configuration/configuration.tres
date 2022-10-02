@@ -8,4 +8,4 @@
 script = ExtResource("1_6kwt3")
 http_log_format = ExtResource("1_rd3ry")
 http_proxy = ExtResource("2_6rbo7")
-default_base_url = null
+default_base_url = ""

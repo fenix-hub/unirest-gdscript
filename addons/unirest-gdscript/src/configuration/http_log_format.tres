@@ -3,7 +3,6 @@
 [ext_resource type="Script" path="res://addons/unirest-gdscript/src/configuration/http_log_format.gd" id="1_3l0rp"]
 
 [resource]
-resource_local_to_scene = true
 resource_name = "HttpLogFormat"
 script = ExtResource("1_3l0rp")
 request = "[{date}] - {host} >> \"{method} {URI} {protocol}\" {bytes} \"{agent}\""

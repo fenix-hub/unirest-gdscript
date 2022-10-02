@@ -48,9 +48,9 @@ static func headers_from_dictionary(headers: Dictionary) -> PackedStringArray:
 static func dictionary_to_headers(headers: PackedStringArray) -> Dictionary:
     var dictionary: Dictionary = {}
     for header in headers:
-        var kv: Array = header.split(": ")
+        var kv: Array = header.split(":", true, 1)
         var name: String = kv[0]
-        var value = kv[1]
+        var value: String = str(kv[1]).lstrip(" ")
         if (value.begins_with("{") and value.ends_with("}")) \
         or (value.begins_with("[") and value.ends_with("]")):
             value = JSON.parse_string(value)

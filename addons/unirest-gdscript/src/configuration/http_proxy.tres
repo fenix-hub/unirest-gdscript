@@ -1,11 +1,10 @@
 [gd_resource type="Resource" load_steps=2 format=3 uid="uid://c15rd4a1w3jud"]
 
-[ext_resource type="Script" path="res://addons/unirest-gdscript/src/configuration/http_proxy.gd" id="1_vla2o"]
+[ext_resource type="Script" path="res://addons/unirest-gdscript/src/configuration/http_proxy.gd" id="1_ex4u1"]
 
 [resource]
-resource_local_to_scene = true
 resource_name = "HttpProxy"
-script = ExtResource("1_vla2o")
+script = ExtResource("1_ex4u1")
 host = ""
 port = -1
 username = ""
