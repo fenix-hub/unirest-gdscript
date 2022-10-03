@@ -7,7 +7,7 @@ Unirest in GDScript: Simplified, lightweight HTTP client library. Godot Engine H
 ```gdscript
 func _ready() -> void:
 	var json_response: JsonResponse = await Unirest.Get("https://jsonplaceholder.typicode.com/posts/{id}")  
-	.header("Accept", "application/json") \
+	.header("Accept", "application/json") 
 	.route_param("id", "1")
 	.as_json()
 	
