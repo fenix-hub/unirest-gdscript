@@ -1,6 +1,8 @@
 # unirest-gdscript
 Unirest in GDScript: Simplified, lightweight HTTP client library. Godot Engine HTTPClient extension inspired by Kong Unirest.
 
+👉 [4.x](https://github.com/fenix-hub/unirest-gdscript/4.x)
+
 ### sync example
 ```gdscript
 func _ready() -> void:
