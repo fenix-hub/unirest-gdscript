@@ -11,6 +11,8 @@ func _ready() -> void:
 	.route_param("id", "1")
 	.as_json()
 	
+	# Execution will stop until Unirest receives a response
+	
 	var json_node: JsonNode = json_response.get_body()
 	print(json_node.as_dict().get("title"))
 ```
@@ -25,16 +27,20 @@ func _ready() -> void:
 		func(json_response: JsonResponse):
 			json_response.get_body().as_dict().get("title")
 	)
+	
+	# Execution won't stop, and the anonymous function will be executed automatically
 ```
 
 ### async example (signals)
 ```gdscript
 func _ready() -> void:
-	var get_request: GetRequest = Unirest.get("https://jsonplaceholder.typicode.com/posts/{id}") 
+	GetRequest = Unirest.get("https://jsonplaceholder.typicode.com/posts/{id}") 
 	.header("Accept", "application/json") 
 	.route_param("id", "1")
-	get_request.completed.connect(handle_response)
-	get_request.as_json_async()
+	.as_json_async()
+	.completed.connect(handle_response)
+	
+	# Execution won't stop here, and your function will be called upon signal emission
 
 
 func handle_response(json_response: JsonResponse) -> void:
