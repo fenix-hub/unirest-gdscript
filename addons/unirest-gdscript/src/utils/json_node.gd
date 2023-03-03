@@ -16,13 +16,17 @@ func is_dict() -> bool:
 func get_result():
     return result
 
-func get_array() -> Array:
-    assert(is_array(), "Result is not an array!")
+func as_array() -> Array:
+    if not is_array():
+        printerr("Result is not an array!")
+        return []
     var _res: Array = result
     return _res
 
-func get_dictionary() -> Dictionary:
-    assert(is_dict(), "Result is not a dictionary!")
+func as_dictionary() -> Dictionary:
+    if not is_dict():
+        printerr("Result is not a dictionary!")
+        return {}
     var _res: Dictionary = result
     return _res
 

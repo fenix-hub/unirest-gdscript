@@ -50,10 +50,11 @@ static func dictionary_to_headers(headers: PackedStringArray) -> Dictionary:
     for header in headers:
         var kv: Array = header.split(":", true, 1)
         var name: String = kv[0]
-        var value: String = str(kv[1]).lstrip(" ")
-        if (value.begins_with("{") and value.ends_with("}")) \
-        or (value.begins_with("[") and value.ends_with("]")):
-            value = JSON.parse_string(value)
+        var value: Dictionary = {}
+        var t_value: String = str(kv[1]).lstrip(" ")
+        if (t_value.begins_with("{") and t_value.ends_with("}")) \
+        or (t_value.begins_with("[") and t_value.ends_with("]")):
+            value = JSON.parse_string(t_value)
         dictionary[name] = value
     return dictionary
 

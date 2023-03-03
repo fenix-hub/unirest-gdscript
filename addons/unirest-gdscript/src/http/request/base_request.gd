@@ -84,7 +84,6 @@ func make_request(response_type: ResponseType) -> int:
     return request_raw(
         URL, 
         headers, 
-        verify_ssl, 
         method, 
         self._body
     )
