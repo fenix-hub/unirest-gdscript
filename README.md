@@ -35,7 +35,7 @@ func _ready() -> void:
 ### async example (signals)
 ```gdscript
 func _ready() -> void:
-    GetRequest = Unirest.get("https://jsonplaceholder.typicode.com/posts/{id}") \
+    Unirest.Get("https://jsonplaceholder.typicode.com/posts/{id}") \
     .header("Accept", "application/json") \
     .route_param("id", "1") \
     .as_json_async() \
